@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    table, th, td {
+        border: 1px solid black;
+    }
+
+    td {
+        text-align: center;
+    }
+
+</style>
+<body onload="initialSetup()">
+Number of Players: <input type="range" min="5" max="10" id="num_players" onchange="updateTable()" value="10"><em id="playerCount">10</em>
+<br><br>
+Number of Missions: <input type="range" min="3" max="5" id="num_missions" onchange="missionCount()" value="3"><em id="mission_count">3</em>
+<br><br>
+<input type="radio" name="win type" value="" checked="True"> Good - Missions<br>
+<input type="radio" name="win type" value="missions"> Bad - Missions<br>
+<input type="radio" name="win type" value="merlin"> Merlin
+<br><br>
+<div id="error_message" style="color:red; font-size:20px"></div>
+<br>
+<table id="player_list" style="width:50%">
+
+</table>
+<br>
+<input type="button" onclick="gatherData()" name="Submit" value="Submit">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://www.json.org/json2.js"></script>
+<script>
+
+
+
+    function initialSetup() {
+        console.log("party time");
+        resetTable();
+        updateTable();
+    }
+
+    function missionCount() {
+        var num_players = document.getElementById("num_missions").value;
+        var counter = document.getElementById("mission_count");
+        counter.innerHTML = num_players;
+    }
+
+    function resetTable() {
+        var table = document.getElementById("player_list");
+        table.innerHTML = "<tr><th>Seat #</th><th>Player Name</th><th>Role</th><th>First Lady?</th></tr>"
+    }
+
+    function updateTable() {
+        var num_players = document.getElementById("num_players").value;
+        var counter = document.getElementById("playerCount");
+        counter.innerHTML = num_players;
+
+        var table = document.getElementById("player_list");
+        resetTable();
+        for (var i = 1; i <= num_players; i++) {
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            row.className = 'player_row';
+            row.insertCell(0).innerHTML = '<td id="seat'+ i + '">' + i + '</td>'
+            row.insertCell(1).innerHTML = '<td><input type="text" class="playername" id="name'+ i + '" style="width:98%"></td>'
+            row.insertCell(2).innerHTML = '<td><select id="role'+ i + '"><option value="merlin">merlin</option><option value="percival">percival</option><option value="good">good</option><option value="morgana">morgana</option><option value="mordred">mordred</option><option value="bad">bad</option></select></td>'
+            row.insertCell(3).innerHTML = '<td><input id="lady'+ i + '"type="radio" name="firstlady" value="firstlady" checked="true"></td>'
+        }
+    }
+
+    function gatherData() {
+//        playerData();
+        gameData();
+    }
+
+    function gameData() {
+        console.log("submitted");
+        var num_players = document.getElementById("num_players").value;
+        var win_method = $('input[name="win type"]:checked').val();
+        var num_missions = document.getElementById("num_missions").value;
+        if (win_method == "") {
+            var winner = "good";
+        } else {
+            var winner = "bad";
+        }
+        var game_results = { '0':
+            {
+                "player_count": num_players,
+                "winner": winner,
+                "mission_count": num_missions,
+                "method": win_method
+            }
+        };
+
+        console.log(game_results);
+        document.getElementById("error_message").innerHTML = ""
+        $.ajax({
+            url: '/api/game',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(game_results),
+            type: 'POST',
+            success: function (response) {
+                console.log("success");
+                console.log(response);
+            },
+            error: function (error) {
+                console.log("error");
+                console.log(error);
+            }
+        });
+    }
+
+
+
+    function playerData() {
+        console.log("submitted");
+        var dataGood = true;
+        var results = {};
+        var elements = document.getElementsByClassName("player_row");
+        for (var i=1; i<=elements.length; i++){
+            var playerName = document.getElementById("name"+i).value;
+            var playerRole = document.getElementById("role"+i).value;
+            var playerLady = document.getElementById("lady"+i).checked;
+            results[i] = {"seat": i,
+                        "name": playerName,
+                        "role": playerRole,
+                        "lady": playerLady
+            }
+            if (playerName == '') {
+                console.log("missing name");
+                dataGood = false;
+            }
+        }
+        console.log(results);
+        if (dataGood) {
+            document.getElementById("error_message").innerHTML = ""
+            $.ajax({
+                url: '/api/players',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(results),
+                type: 'POST',
+                success: function (response) {
+                    console.log("success");
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log("error");
+                    console.log(error);
+                }
+            });
+        } else {
+            console.log("something was bad");
+            document.getElementById("error_message").innerHTML = "At least one name is missing. Fix it before submitting."
+        }
+    }
+
+
+
+</script>
+</body>
+</html>
