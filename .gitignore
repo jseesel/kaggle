@@ -1,3 +1,5 @@
 # don't upload CSVs
 *.csv
 */.ipynb_checkpoints/*
+*.pyc
+secret_santa/.email_pass
