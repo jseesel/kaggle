@@ -7,11 +7,12 @@ from email_helper import Email, EmailConnection
 
 def send_email(giver, receiver):
     giver_email = giver['email']
+    giver_name = giver['name']
     receiver_name = receiver['name']
     EMAIL_PASSWORD = open('.email_pass', 'r').read()
 
     html_body_text = """
-    Hello my little king,
+    Hello {giver_name}, my little king,
     <br><br>
     If you are receiving this email, it's because you signed up for secret santa in bois chat. 
     <br>Don't show this email to anyone else to keep it a secret.
@@ -21,7 +22,7 @@ def send_email(giver, receiver):
     <br>Sincerely,
     <br>Jim
     
-    """.format(receiver_name=receiver_name)
+    """.format(giver_name=giver_name,receiver_name=receiver_name)
 
     # now we send the actual email
     msg = Email()
@@ -33,9 +34,11 @@ def send_email(giver, receiver):
     ec = EmailConnection(sender_email, EMAIL_PASSWORD)
     ec.send(msg)
     print "sent email to {}".format(giver_email)
+    # print "sent email to {} for {}".format(giver_name,receiver_name)
 
 
-input_csv = 'test_input.csv'
+# input_csv = 'test_input.csv'
+input_csv = 'real_input.csv'
 with open(input_csv, 'r') as f:
     data = f.readlines()
 
@@ -69,9 +72,9 @@ while matches:
         shuffle(givers)
         shuffle(receivers)
 
-print "final sorts"
-print "givers   : ", givers
-print "receivers: ", receivers
+# print "final sorts"
+# print "givers   : ", givers
+# print "receivers: ", receivers
 
 for i in range(0, len(people), 1):
     curr_giver = people_map[givers[i]]
