@@ -12,16 +12,16 @@ def send_email(giver, receiver):
     EMAIL_PASSWORD = open('.email_pass', 'r').read()
 
     html_body_text = """
-    Hello {giver_name}, my little king,
+    Hello {giver_name}, my dear boi,
     <br><br>
-    If you are receiving this email, it's because you signed up for secret santa in bois chat. 
+    If you are receiving this email, it's because you signed up for secret santa in bois chat.
     <br>Don't show this email to anyone else to keep it a secret.
     <br><br>Your chosen boi is: <b>{receiver_name}</b>
     <br><br>Actual location/timing of gift swap still TBD but probably a bois brunch or something.
     <br>
     <br>Sincerely,
     <br>Jim
-    
+
     """.format(giver_name=giver_name,receiver_name=receiver_name)
 
     # now we send the actual email
@@ -30,15 +30,15 @@ def send_email(giver, receiver):
     msg.add_sender(sender_email)
     msg.list_recipients(giver_email)  # [array,if,multiple] else single email
     msg.html_body(html_body_text)
-    msg.subject("BOIS CHAT SECRET SANTA ASSIGNMENT")  # string
+    msg.subject("BOIS CHAT SECRET SANTA ASSIGNMENT - 2019")  # string
     ec = EmailConnection(sender_email, EMAIL_PASSWORD)
     ec.send(msg)
     print "sent email to {}".format(giver_email)
     # print "sent email to {} for {}".format(giver_name,receiver_name)
 
-
+#
 # input_csv = 'test_input.csv'
-input_csv = 'real_input.csv'
+input_csv = 'real_input_2019.csv'
 with open(input_csv, 'r') as f:
     data = f.readlines()
 
