@@ -2,8 +2,7 @@ from random import shuffle
 from pprint import pprint
 from datetime import datetime
 
-# TODO: email everyone, no log
-
+# this job takes an input of secret santa signups and randomly assigns them to each other
 # example data: Timestamp,Who are you?,What's your email?,Street Address,City,State,Zip code,Any gift suggestions?
 
 
