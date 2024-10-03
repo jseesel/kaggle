@@ -7,7 +7,8 @@ from datetime import datetime
 
 
 # input_csv = 'test_data.tsv'
-output_csv = 'test_output.tsv'
+# output_csv = 'test_output.tsv'
+output_csv = '{}_boismas_output.tsv'.format(datetime.now().year)
 
 input_csv = 'real_input_{}.tsv'.format(datetime.now().year)
 # output_csv = '{}_boismas_output.tsv'.format(datetime.now().year)
@@ -69,10 +70,13 @@ while matches:
         giver_name = people_map[givers[i]]['name']
         receiver_name = people_map[receivers[i]]['name']
         # print("{}: this year {} | last year {}".format(giver_name, receiver_name, last_year_map[giver_name]))
-        if receiver_name == last_year_map[giver_name]:
-            # print("matched last year for ", givers[i])
-            matches = True
-            break
+        try:
+            if receiver_name == last_year_map[giver_name]:
+                # print("matched last year for ", givers[i])
+                matches = True
+                break
+        except KeyError:
+            print("user didn't boismas last year")
     if matches:
         shuffle(givers)
         shuffle(receivers)
