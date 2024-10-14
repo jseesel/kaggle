@@ -40,11 +40,16 @@ for i in range(0, len(people), 1):
         suggestion = people[i][7]
     except IndexError:
         suggestion = ''
+    try:
+        clothing_size = people[i][8]
+    except IndexError:
+        clothing_size = ''
     people_map[i] = {
         'name': people[i][1].strip(),
         'email': people[i][2].strip(),
         'address': people[i][3] + ' ' + people[i][4] + ', ' + people[i][5] + ' ' + people[i][6].strip(),
-        'suggestions': suggestion.strip()
+        'suggestions': suggestion.strip(),
+        'clothing_size': clothing_size.strip()
     }
 
 last_year_map = {}
@@ -86,11 +91,11 @@ while matches:
 #     print("{} gives to {}".format(givers[i], receivers[i]))
 
 with open(output_csv, 'w') as f:
-    f.write('giver_email\tgiver_name\treceiver_name\treceiver_address\tsuggestions\n')
+    f.write('giver_email\tgiver_name\treceiver_name\treceiver_address\tsuggestions\tclothing sizes\n')
     for i in range(0, len(people), 1):
         curr_giver = people_map[givers[i]]
         curr_receiver = people_map[receivers[i]]
-        f.write('{giver_email}\t{giver_name}\t{receiver_name}\t{address}\t{suggestions}\n'.format(
+        f.write('{giver_email}\t{giver_name}\t{receiver_name}\t{address}\t{suggestions}\t{clothing_size}\n'.format(
             giver_email=curr_giver['email'], giver_name=curr_giver['name'], receiver_name=curr_receiver['name'],
-            address=curr_receiver['address'],suggestions=curr_receiver['suggestions'] ))
+            address=curr_receiver['address'],suggestions=curr_receiver['suggestions'], clothing_size=curr_receiver['clothing_size'] ))
         print("log result for {}".format(curr_giver['name']))
